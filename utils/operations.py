@@ -1,37 +1,17 @@
-import json
-
-def load_operations():
-    '''Загружает список словарей с операциями из файла'''
-    with open('operations.json', mode='r', encoding='utf-8') as file:
-        return json.load(file)
-
-
-def load_executed_operations():
-    '''Возвращает список словарей с выполненными операциями'''
-    executed_operations = []
-    operations = load_operations()
-    key = "state"
-    for operation in operations:
-        if key in operation:
-            if operation["state"] == "EXECUTED":
-                executed_operations.append(operation)
-
-    return executed_operations
+from datetime import datetime
 
 
 class Operation:
-    def __init__(self, date, to_number, from_number="Номер отправителя не указан"):
+    def __init__(self, date, to_number, from_number):
         self.date = date
         self.from_number = from_number
         self.to_number = to_number
 
     def build_date(self):
         """Возвращает дату в в формате ДД.ММ.ГГГГ"""
-        list_date = self.date.split("-")
-        year = list_date[0]
-        month = list_date[1]
-        day = list_date[2][:2]
-        return f'{day}.{month}.{year}'
+        datetime_object = datetime.strptime(self.date, '%Y-%m-%dT%H:%M:%S.%f')
+        valid_format = datetime_object.strftime('%d.%m.%Y')
+        return valid_format
 
     def build_hidden_number_from(self):
         """Возвращает номер карты в формате  XXXX XX** **** XXXX"""
